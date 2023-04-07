@@ -47,45 +47,188 @@ class ViewController: UIViewController {
         canvasIV.addGestureRecognizer(gesture)
     }
 
-    private var currentScale = 1.0 // we start it to default scale of 1,
+//    private var currentScale = 1.0 // we start it to default scale of 1,
+    
+    
+    private var firstFingerLocation : CGPoint = .init()
+    
+    private var secondFingerLocation : CGPoint = .init()
+    
+    
+    private var graphHeight : CGFloat  = 2
+    private var graphWidth : CGFloat = 2
+    
+    private lazy var  lastCenterOfGraphXInCanvas : CGFloat = defaultCanvasWidth/2
+    private lazy var  lastCenterOfGraphYInCanvas : CGFloat = defaultCanvasHeight/2
+    
+//    private var lastBoundEdge = 0.0
+    
+    private var centerXOfGraph : CGFloat {
+        let withDividingFactor = defaultCanvasWidth/2 * 0.5 // this is becuase we divide the axis above
+        return (lastCenterOfGraphXInCanvas / withDividingFactor)
+    }
+    private var centerYOfGraph : CGFloat {
+        let heightDividingFactor = defaultCanvasHeight/2 * 0.5
+        // this is becuase we divide the axis above
+        return (lastCenterOfGraphYInCanvas / heightDividingFactor)
+    }
     
     @objc func handleZoomGesture(_ recognizer: UIPinchGestureRecognizer) {
         
         switch recognizer.state {
+            
+        
+        case .began :
+            
+            firstFingerLocation = recognizer.location(ofTouch: 0, in: canvasIV)
+            secondFingerLocation = recognizer.location(ofTouch: 1, in: canvasIV)
+            
         case .ended :
+
             let scale = recognizer.scale
-//            let location = recognizer.location(in: canvasIV)
-            let firstFingerLocation = recognizer.location(ofTouch: 0, in: canvasIV)
-            let secondFingerLocation = recognizer.location(ofTouch: 1, in: canvasIV)
-            print("my sscale os \(scale) and location is \(firstFingerLocation) , \(secondFingerLocation)")
             
             let roundedScale = round(scale * 100) / 100 // round it two level precision level tonincrease performance
             
-            if roundedScale < 1 { // zoomed out
-                if currentScale == 1 {return}
-                var currentScale = currentScale * (1/roundedScale)
-                if currentScale > 1 {
-                    currentScale = 1
-                }
-                var gap = 0.5
+            if roundedScale < 1 {
+                graphHeight = graphHeight / roundedScale
+                graphWidth = graphWidth / roundedScale
                 
-                if currentScale < 0.6 {
-                    gap = 0.25
-                }else{
-                    gap = 0.5
-                }
-                
-                
-                let img = getShapeWithCoordinate( canvasWidth: self.defaultCanvasWidth * currentScale, canvasHeight: self.defaultCanvasHeight * currentScale, gap : gap)
-                
-                canvasIV.image = img
-            }else{ // zoomed in
+            }else{
+                graphHeight = graphHeight / roundedScale
+                graphWidth = graphWidth / roundedScale
                 
             }
+            
+           
+            if (graphWidth > 2) {
+                graphWidth = 2
+//                centerXOfGraph = 0
+//                centerYOfGraph = 0
+            }
+            if (graphHeight > 2) {
+                graphHeight = 2
+//                centerXOfGraph = 0
+//                centerYOfGraph = 0
+            }
+            
+            
+            if (graphHeight == 2 ||  graphWidth == 2) {
+                let img = getShapeWithFirstDrawigPointAndGraphHeightWidth(graphHeight: 2, graphWidth: 2, drawingOriginX: 0, drawingOriginY: 0)
+                
+                canvasIV.image = img
+                return
+            }
+            
+            if roundedScale < 1 { //zoom out
+                let img = getShapeWithFirstDrawigPointAndGraphHeightWidth(graphHeight: graphHeight, graphWidth: graphWidth, drawingOriginX: centerXOfGraph, drawingOriginY: centerYOfGraph)
+                
+                canvasIV.image = img
+                return
+            }
+                
+            // zoom in is left from now
+            
+            
+            let firstFingerX = firstFingerLocation.x
+            
+            let secondFIngerX = secondFingerLocation.x
+            
+            let firstFingerY = firstFingerLocation.y
+            
+            let secondFIngerY = secondFingerLocation.y
+           
+            
+            
+            
+            
+            print("my sscale os \(scale) and location is \(firstFingerLocation) , \(secondFingerLocation)")
+            
+            // let build new box react here
+            
+            let startingY = firstFingerY <= secondFIngerY ? firstFingerY : secondFIngerY
+            
+            // I need a point where y is smaller so I will can easily get more room
+            
+            let statingX = firstFingerX <= secondFIngerX ? firstFingerX : secondFIngerX
+            
+            // I need a point where x is smaller so I will can easily get more room
+            
+            let diffInXAxis = abs(secondFIngerX - firstFingerX )
+            let diffInYaxis = abs(secondFIngerY - firstFingerY )
+            
+            let newEdgeForBox = (diffInYaxis > diffInXAxis) ? diffInYaxis : diffInXAxis
+            
+            let startingXForNewBox : CGFloat
+            let startingYForNewBox : CGFloat
+            
+            if (defaultCanvasHeight - startingY) >= newEdgeForBox {
+                startingYForNewBox = startingY
+            }else if  startingY >= newEdgeForBox {
+                startingYForNewBox = startingY - newEdgeForBox
+            }else{
+                startingYForNewBox = 0
+            }
+            
+            if (defaultCanvasWidth - statingX) >= newEdgeForBox {
+                startingXForNewBox = statingX
+            }else if statingX >= newEdgeForBox{
+                startingXForNewBox = statingX - newEdgeForBox
+            }else{
+                startingXForNewBox = 0
+            }
+
+            let middleX = (startingXForNewBox) / 2
+            let middleY = (startingYForNewBox) / 2
+ 
+            lastCenterOfGraphXInCanvas = middleX
+            lastCenterOfGraphYInCanvas = middleY
+            
+            print("hey final value for graphh are \(centerXOfGraph)--- \(centerYOfGraph) ,---- , \(startingYForNewBox) , \(startingXForNewBox) \(newEdgeForBox) / \(graphWidth) , \(graphHeight)")
+            
+            let img = getShapeWithFirstDrawigPointAndGraphHeightWidth(graphHeight: graphHeight, graphWidth: graphWidth, drawingOriginX: centerXOfGraph, drawingOriginY: centerYOfGraph)
+            
+            canvasIV.image = img
+            
+            return
+            
+            // we have now ready with react for new box with y coordinate : startingYForNewBox, x coordinate : startingXForNewBox , and edge if newEdgeForBox
+            
+//            var heightRatioForGraphHeightForNewBox = (2 * newEdgeForBox) / (defaultCanvasHeight / 2)
+//
+//            if heightRatioForGraphHeightForNewBox > 2 {
+//                heightRatioForGraphHeightForNewBox = 2
+//            }
+//
+//            // newEdge/half of canvas height = newHightForGraph/2, becuase we have 2 for half of canvas height (270 for now)
+//
+//            var widthRatioForGraphWidthForNewBox = (2 * newEdgeForBox) / (defaultCanvasWidth / 2)
+//
+//            if widthRatioForGraphWidthForNewBox > 2 {
+//                widthRatioForGraphWidthForNewBox = 2
+//            }
+            
+            // same logic ^^^^
+            
+//            print("hello , postin of box are , \(startingXForNewBox) , \(startingYForNewBox) , \(heightRatioForGraphHeightForNewBox) , \(widthRatioForGraphWidthForNewBox) , \(newEdgeForBox)")
+            
+            
+           
+            
+            
+            
+            
+//            let img = getShapeWithFirstDrawigPointAndGraphHeightWidth(graphHeight: 1, graphWidth: 1, drawingOriginX: 0, drawingOriginY: 0)
+//
+//            canvasIV.image = img
+            
+            
+//            if roundedScale == 1 {return}
+//
             
         default :
             break
         }
+   
         
         
         
