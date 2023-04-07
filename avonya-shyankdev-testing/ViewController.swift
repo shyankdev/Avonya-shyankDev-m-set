@@ -46,18 +46,23 @@ class ViewController: UIViewController {
         scrollview.maximumZoomScale = 100
         return scrollview
     }()
-    
+    private let maxIteration = 50
     private func getShapeWithCoordinate() -> UIImageView{
         let rendere = UIGraphicsImageRenderer(size: .init(width: canvasWidth, height: canvasHeight))
         let img = rendere.image { ctx in
             
-            let maxIteration = 50
+            ctx.cgContext.translateBy(x: canvasWidth/2, y: canvasHeight/2)
             let maxAbsLimit = 2.0
             
             var mSetPoints = [CGPoint]()
             
-            for actualX in -Int(canvasWidth/2)...Int(canvasWidth/2) {
-                for actualY in -Int(canvasHeight/2)...Int(canvasHeight/2) {
+//            stride(from: -Double(canvasWidth/2), to: Double(canvasWidth/2), by: 0.25)
+//            stride(from: -Double(canvasHeight/2), to: Double(canvasHeight/2), by: 0.25)
+//            for actualX in -Int(canvasWidth/2)...Int(canvasWidth/2) {
+//                for actualY in -Int(canvasHeight/2)...Int(canvasHeight/2) {
+              
+            for actualX in stride(from: -Double(canvasWidth/2), to: Double(canvasWidth/2), by: 0.5) {
+                for actualY in stride(from: -Double(canvasHeight/2), to: Double(canvasHeight/2), by: 0.5) {
                     
                     let withDividingFactor = canvasWidth/4
                     let heightDividingFactor = canvasHeight/4
@@ -99,7 +104,6 @@ class ViewController: UIViewController {
 //                            print("last result at stage 1 is \(lastResult)")
                             break // we want to ch'eck if this number is under limit which 2 or -2 , abs is used to get absoulte value
                         }
-                        
                         n += 1
                         if (n >= maxIteration) {
                             let finalX = CGFloat(actualX)
@@ -107,44 +111,54 @@ class ViewController: UIViewController {
                             let finalY = CGFloat(actualY)
 //                            + canvasHeight/4
                             mSetPoints.append(.init(x: finalX, y: finalY))
-                            print("actual x = \(actualX) , actual y = \(actualY) , final x = \(finalX)  final y =\(finalY)")
-                            print("last result at final 1 is \(lastPosition)")
+//                            print("actual x = \(actualX) , actual y = \(actualY) , final x = \(finalX)  final y =\(finalY)")
+//                            print("last result at final 1 is \(lastPosition)")
                             break
                         }
                     }
+                    if (n >= maxIteration) {
+                        ctx.cgContext.setFillColor(UIColor.black.cgColor)
+                    }else{
+                        ctx.cgContext.setFillColor(getColorForPoint(numberOfIteration: n).cgColor)
+                    }
+                    ctx.cgContext.addRect(.init(x: actualX, y: actualY, width: 1, height: 1))
+                    ctx.cgContext.drawPath(using: .fill)
                     
                 }
             }
             
              print(" \n 💥 \n hallo, poins set are , \(mSetPoints)")
             
-            ctx.cgContext.translateBy(x: canvasWidth/2, y: canvasHeight/2)
+//            ctx.cgContext.translateBy(x: canvasWidth/2, y: canvasHeight/2)
 //            ctx.cgContext.translateBy(x: 0, y: canvasHeight/2)
 //            ctx.cgContext.rotate(by: -(2 * .pi)/3)
 //            ctx.cgContext.move(to: .zero)
 //            ctx.cgContext.addLine(to: .init(x: 200, y: -90))
 //            ctx.cgContext.addLine(to: .init(x: 100, y: -100))
             
-            for i in 0..<mSetPoints.count {
-                let point = mSetPoints[i]
-                if i == 0 {
-                    ctx.cgContext.move(to: .init(x: point.x, y: -(point.y)))
-                    print("initial point is \(point)")
-                }else{
-                    ctx.cgContext.inser
-                    ctx.cgContext.addLine(to: .init(x: point.x, y: -(point.y)))
-
-                }
-            }
+//            for i in 0..<mSetPoints.count {
+//                let point = mSetPoints[i]
+//                if i == 0 {
+//                    ctx.cgContext.move(to: .init(x: point.x, y: -(point.y)))
+////                    print("initial point is \(point)")
+//                }else{
+////                    ctx.cgContext.inser
+////                    ctx.cgContext.addQuadCurve(to: point, control: point)
+//
+//                    ctx.cgContext.addRect(.init(x: point.x, y: point.y, width: 1, height: 1))
+////                    ctx.cgContext.addLine(to: .init(x: point.x, y: -(point.y)))
+//
+//                }
+//            }
             
            
+//            ctx.cgContext.closePath()
             
             
-            
-            ctx.cgContext.setFillColor(UIColor.red.cgColor)
-            ctx.cgContext.setStrokeColor(UIColor.black.cgColor)
-            ctx.cgContext.setLineWidth(1)
-            ctx.cgContext.drawPath(using: .stroke)
+//            ctx.cgContext.setFillColor(UIColor.black.cgColor)
+////            ctx.cgContext.setStrokeColor(UIColor.black.cgColor)
+//            ctx.cgContext.setLineWidth(0)
+//            ctx.cgContext.drawPath(using: .fill)
             
 //            for point in mSetPoints {
 //                ctx.cgContext.addLine(to: point)
@@ -165,12 +179,21 @@ class ViewController: UIViewController {
         }
         let iv = UIImageView(image: img)
         iv.contentMode = .scaleAspectFill
+        iv.backgroundColor = .gray
         return iv
     }
     
     private func getRandomColor() -> UIColor {
         let color = [UIColor.red , .blue , .green , .systemPink , .orange , .yellow].randomElement() ?? .brown
         return color
+    }
+    
+    private func getColorForPoint(numberOfIteration : Int) -> UIColor {
+        if numberOfIteration == maxIteration {
+               return .black
+           }
+           let hue = CGFloat(numberOfIteration) / CGFloat(maxIteration)
+           return UIColor(hue: hue, saturation: 1.0, brightness: 1.0, alpha: 1.0)
     }
 }
 
