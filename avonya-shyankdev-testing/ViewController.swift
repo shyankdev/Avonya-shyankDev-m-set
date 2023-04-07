@@ -25,30 +25,41 @@ class ViewController: UIViewController {
             scrollView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
         
-        let img = getShapeWithCoordinate( canvasWidth: self.canvasWidth, canvasHeight: self.canvasHeight)
-        img.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(img)
+        view.addSubview(canvasIV)
         
         NSLayoutConstraint.activate([
-            img.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            img.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            img.heightAnchor.constraint(equalToConstant: canvasHeight),
-            img.widthAnchor.constraint(equalToConstant: canvasWidth),
+            canvasIV.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            canvasIV.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            canvasIV.heightAnchor.constraint(equalToConstant: canvasHeight),
+            canvasIV.widthAnchor.constraint(equalToConstant: canvasWidth),
         ])
+        
+        let img = getShapeWithCoordinate( canvasWidth: self.canvasWidth, canvasHeight: self.canvasHeight)
+        canvasIV.image = img
+        
     }
 
+    
 
-    private let scrollView : UIScrollView = {
-        let scrollview = UIScrollView()
-        scrollview.translatesAutoresizingMaskIntoConstraints = false
-        scrollview.backgroundColor = .systemTeal
-        scrollview.maximumZoomScale = 100
-        return scrollview
+    private let canvasIV :  UIImageView = {
+        let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.backgroundColor = .clear
+        iv.contentMode = .scaleAspectFit
+        return iv
     }()
+
+    private let scrollView : UIImageView = {
+        let iv = UIImageView()
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.backgroundColor = .systemTeal
+        iv.contentMode = .scaleAspectFit
+        return iv
+    }()
+    
     private let maxIteration = 50
     
-    private func getShapeWithCoordinate(canvasWidth : CGFloat , canvasHeight : CGFloat) -> UIImageView{
+    private func getShapeWithCoordinate(canvasWidth : CGFloat , canvasHeight : CGFloat) -> UIImage{
         let rendere = UIGraphicsImageRenderer(size: .init(width: canvasWidth, height: canvasHeight))
         let img = rendere.image { ctx in
             
@@ -93,10 +104,11 @@ class ViewController: UIViewController {
             }
 
         }
-        let iv = UIImageView(image: img)
-        iv.contentMode = .scaleAspectFill
-        iv.backgroundColor = .gray
-        return iv
+        return img
+//        let iv = UIImageView(image: img)
+//        iv.contentMode = .scaleAspectFill
+//        iv.backgroundColor = .gray
+//        return iv
     }
     
     private func getRandomColor() -> UIColor {
@@ -115,10 +127,4 @@ class ViewController: UIViewController {
 
 
 
-
-extension ViewController : UIScrollViewDelegate{
-    //    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-    //        return .init()
-    //    }
-}
     
