@@ -54,7 +54,7 @@ class ViewController: UIViewController {
             ctx.cgContext.translateBy(x: canvasWidth/2, y: canvasHeight/2)
             let maxAbsLimit = 2.0
             
-            var mSetPoints = [CGPoint]()
+            
             
 //            stride(from: -Double(canvasWidth/2), to: Double(canvasWidth/2), by: 0.25)
 //            stride(from: -Double(canvasHeight/2), to: Double(canvasHeight/2), by: 0.25)
@@ -110,7 +110,7 @@ class ViewController: UIViewController {
 //                            + canvasWidth/4
                             let finalY = CGFloat(actualY)
 //                            + canvasHeight/4
-                            mSetPoints.append(.init(x: finalX, y: finalY))
+                            
 //                            print("actual x = \(actualX) , actual y = \(actualY) , final x = \(finalX)  final y =\(finalY)")
 //                            print("last result at final 1 is \(lastPosition)")
                             break
@@ -127,7 +127,7 @@ class ViewController: UIViewController {
                 }
             }
             
-             print(" \n 💥 \n hallo, poins set are , \(mSetPoints)")
+//             print(" \n 💥 \n hallo, poins set are , \(mSetPoints)")
             
 //            ctx.cgContext.translateBy(x: canvasWidth/2, y: canvasHeight/2)
 //            ctx.cgContext.translateBy(x: 0, y: canvasHeight/2)
