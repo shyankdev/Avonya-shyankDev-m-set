@@ -85,9 +85,10 @@ class ViewController: UIViewController {
             
         case .ended :
 
+        
             let scale = recognizer.scale
             
-            var roundedScale = round(scale * 100) / 100 // round it two level precision level tonincrease performance
+            let roundedScale = round(scale * 100) / 100 // round it two level precision level tonincrease performance
             
 //            roundedScale
 //            if roundedScale < 1 {
@@ -196,7 +197,7 @@ class ViewController: UIViewController {
             
             canvasIV.image = img
             
-            return
+            
             
             // we have now ready with react for new box with y coordinate : startingYForNewBox, x coordinate : startingXForNewBox , and edge if newEdgeForBox
             
@@ -261,7 +262,10 @@ class ViewController: UIViewController {
     private let maxIteration = 50
     
     private func getShapeWithFirstDrawigPointAndGraphHeightWidth(graphHeight : CGFloat , graphWidth : CGFloat , drawingOriginX : Double , drawingOriginY : Double ) -> UIImage {
+        
+        
         let img = getShaopeImagePartSmaller(graphHeight: graphHeight, graphWidth: graphWidth, canvasWidth: self.defaultCanvasWidth, canvasHeight: self.defaultCanvasHeight, gap: 0.5, drawingOriginX: drawingOriginX, drawingOriginY: drawingOriginY)
+        
         return img
     }
     
