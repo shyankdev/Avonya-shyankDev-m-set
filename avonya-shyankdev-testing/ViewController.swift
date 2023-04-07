@@ -36,7 +36,7 @@ class ViewController: UIViewController {
         
 //        let img = getShapeWithCoordinate( canvasWidth: self.canvasWidth, canvasHeight: self.canvasHeight, gap : 0.5)
         
-        let img = getShaopeImagePartSmaller(graphHeight: 2, graphWidth: 2 , canvasWidth: self.defaultCanvasWidth, canvasHeight: self.defaultCanvasHeight, gap : 0.5)
+        let img = getShaopeImagePartSmaller(graphHeight: 2, graphWidth: 2 , canvasWidth: self.defaultCanvasWidth, canvasHeight: self.defaultCanvasHeight, gap : 0.5 , drawingOriginX : -1 , drawingOriginY : 0)
 //        getShaopeImagePartSmaller
 //        let img = getShapeForSmallArea(fromX: -defaultCanvasWidth/2, fromY: -defaultCanvasHeight/2, canvasWidth: defaultCanvasWidth, canvasHeight: defaultCanvasHeight, gap: 0.5)
         canvasIV.image = img
@@ -111,7 +111,7 @@ class ViewController: UIViewController {
     
     
     
-    private func getShaopeImagePartSmaller(graphHeight : CGFloat , graphWidth : CGFloat ,  canvasWidth : CGFloat , canvasHeight : CGFloat , gap : Double) -> UIImage{
+    private func getShaopeImagePartSmaller(graphHeight : CGFloat , graphWidth : CGFloat ,  canvasWidth : CGFloat , canvasHeight : CGFloat , gap : Double, drawingOriginX : Double , drawingOriginY : Double) -> UIImage{
         let rendere = UIGraphicsImageRenderer(size: .init(width: canvasWidth, height: canvasHeight))
         let img = rendere.image { ctx in
             
@@ -129,7 +129,8 @@ class ViewController: UIViewController {
                     
                     var n = 0 // number of iterations
                     let c : Complex<Double> = .init(Double(x), Double(y))
-                    var lastPosition : Complex<Double> = 0 + 0 * .i
+//                    var lastPosition : Complex<Double> = 0 + 0 * .i
+                    var lastPosition : Complex<Double> = .init(drawingOriginX, drawingOriginY)
                     while true {
                         let z2 = (lastPosition * lastPosition)
                         lastPosition = z2 + c
