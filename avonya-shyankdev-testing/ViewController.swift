@@ -25,7 +25,7 @@ class ViewController: UIViewController {
             scrollView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
         
-        let img = getShapeWithCoordinate()
+        let img = getShapeWithCoordinate( canvasWidth: self.canvasWidth, canvasHeight: self.canvasHeight)
         img.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(img)
@@ -47,20 +47,14 @@ class ViewController: UIViewController {
         return scrollview
     }()
     private let maxIteration = 50
-    private func getShapeWithCoordinate() -> UIImageView{
+    
+    private func getShapeWithCoordinate(canvasWidth : CGFloat , canvasHeight : CGFloat) -> UIImageView{
         let rendere = UIGraphicsImageRenderer(size: .init(width: canvasWidth, height: canvasHeight))
         let img = rendere.image { ctx in
             
             ctx.cgContext.translateBy(x: canvasWidth/2, y: canvasHeight/2)
             let maxAbsLimit = 2.0
             
-            
-            
-//            stride(from: -Double(canvasWidth/2), to: Double(canvasWidth/2), by: 0.25)
-//            stride(from: -Double(canvasHeight/2), to: Double(canvasHeight/2), by: 0.25)
-//            for actualX in -Int(canvasWidth/2)...Int(canvasWidth/2) {
-//                for actualY in -Int(canvasHeight/2)...Int(canvasHeight/2) {
-              
             for actualX in stride(from: -Double(canvasWidth/2), to: Double(canvasWidth/2), by: 0.5) {
                 for actualY in stride(from: -Double(canvasHeight/2), to: Double(canvasHeight/2), by: 0.5) {
                     
@@ -70,49 +64,20 @@ class ViewController: UIViewController {
                     let x = CGFloat(actualX)/withDividingFactor // we have to take range of cooirdinate from -2 to +2,
                     let y = CGFloat(actualY)/heightDividingFactor // this will convert pixel location to coordinate on graph
                     
-//                    let x = CGFloat(actualX)
-//                    let y = CGFloat(actualY)
-                    
-//                    print("hey x is \(x) , y is \(y) , actuall value are of x & y =>>> \(actualX) \(actualY)")
-                    
-                    
-                    //MARK: - this might be needed in future
-//                    let cSqr =  pow(Double(x) , 2) + pow(Double(y), 2)
-//                    let c = sqrt(Double(cSqr)) // this is maginautde of c or value of comlex number
-//
-//                    print("value of c \(c)")
-                    
-                    var n = 0
-                    
-                    // fc (z) = z^2 + c
-//                    var lastResult = 0.0
-                    // we are taking as zero as, at zero value of z is also zero, by convention or by m set structure
-//                    let c : Complex<Double> = 2 + 3 * .i
-                    
+                    var n = 0 // number of iterations
                     let c : Complex<Double> = .init(Double(x), Double(y))
-                    
                     var lastPosition : Complex<Double> = 0 + 0 * .i
-//                    print(z.real)      // 2.0
-//                    print(z.imaginary) // 3.0
-//                    let realPart =
-//                    var c = Complex(Real(x), Real(y) )
                     while true {
                         let z2 = (lastPosition * lastPosition)
                         lastPosition = z2 + c
                         
                         if abs(lastPosition.lengthSquared) > pow(maxAbsLimit, 2){
-//                            print("last result at stage 1 is \(lastResult)")
                             break // we want to ch'eck if this number is under limit which 2 or -2 , abs is used to get absoulte value
                         }
                         n += 1
                         if (n >= maxIteration) {
                             let finalX = CGFloat(actualX)
-//                            + canvasWidth/4
                             let finalY = CGFloat(actualY)
-//                            + canvasHeight/4
-                            
-//                            print("actual x = \(actualX) , actual y = \(actualY) , final x = \(finalX)  final y =\(finalY)")
-//                            print("last result at final 1 is \(lastPosition)")
                             break
                         }
                     }
@@ -126,55 +91,6 @@ class ViewController: UIViewController {
                     
                 }
             }
-            
-//             print(" \n 💥 \n hallo, poins set are , \(mSetPoints)")
-            
-//            ctx.cgContext.translateBy(x: canvasWidth/2, y: canvasHeight/2)
-//            ctx.cgContext.translateBy(x: 0, y: canvasHeight/2)
-//            ctx.cgContext.rotate(by: -(2 * .pi)/3)
-//            ctx.cgContext.move(to: .zero)
-//            ctx.cgContext.addLine(to: .init(x: 200, y: -90))
-//            ctx.cgContext.addLine(to: .init(x: 100, y: -100))
-            
-//            for i in 0..<mSetPoints.count {
-//                let point = mSetPoints[i]
-//                if i == 0 {
-//                    ctx.cgContext.move(to: .init(x: point.x, y: -(point.y)))
-////                    print("initial point is \(point)")
-//                }else{
-////                    ctx.cgContext.inser
-////                    ctx.cgContext.addQuadCurve(to: point, control: point)
-//
-//                    ctx.cgContext.addRect(.init(x: point.x, y: point.y, width: 1, height: 1))
-////                    ctx.cgContext.addLine(to: .init(x: point.x, y: -(point.y)))
-//
-//                }
-//            }
-            
-           
-//            ctx.cgContext.closePath()
-            
-            
-//            ctx.cgContext.setFillColor(UIColor.black.cgColor)
-////            ctx.cgContext.setStrokeColor(UIColor.black.cgColor)
-//            ctx.cgContext.setLineWidth(0)
-//            ctx.cgContext.drawPath(using: .fill)
-            
-//            for point in mSetPoints {
-//                ctx.cgContext.addLine(to: point)
-//                ctx.cgContext.setFillColor(UIColor.red.cgColor)
-//                ctx.cgContext.setStrokeColor(UIColor.black.cgColor)
-//                ctx.cgContext.setLineWidth(10)
-//                ctx.cgContext.drawPath(using: .fillStroke)
-//            }
-//
-//            let rectangle = CGRect(x: 0, y: 0, width: 480  , height: 400)
-//            ctx.cgContext.setFillColor(UIColor.red.cgColor)
-//            ctx.cgContext.setStrokeColor(UIColor.black.cgColor)
-//            ctx.cgContext.setLineWidth(10)
-//
-//            ctx.cgContext.addRect(rectangle)
-//            ctx.cgContext.drawPath(using: .fillStroke)
 
         }
         let iv = UIImageView(image: img)
@@ -196,6 +112,7 @@ class ViewController: UIViewController {
            return UIColor(hue: hue, saturation: 1.0, brightness: 1.0, alpha: 1.0)
     }
 }
+
 
 
 
