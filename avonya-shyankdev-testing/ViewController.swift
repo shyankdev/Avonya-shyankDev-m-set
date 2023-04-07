@@ -87,18 +87,25 @@ class ViewController: UIViewController {
 
             let scale = recognizer.scale
             
-            let roundedScale = round(scale * 100) / 100 // round it two level precision level tonincrease performance
+            var roundedScale = round(scale * 100) / 100 // round it two level precision level tonincrease performance
             
+//            roundedScale
+//            if roundedScale < 1 {
+//                graphHeight = graphHeight / roundedScale
+//                graphWidth = graphWidth / roundedScale
+//
+//            }else{
+//                graphHeight = graphHeight / roundedScale
+//                graphWidth = graphWidth / roundedScale
+//
+//            }
             if roundedScale < 1 {
-                graphHeight = graphHeight / roundedScale
-                graphWidth = graphWidth / roundedScale
-                
+                graphWidth = graphWidth * 1.3
+                graphHeight = graphHeight * 1.3
             }else{
-                graphHeight = graphHeight / roundedScale
-                graphWidth = graphWidth / roundedScale
-                
+                graphWidth = graphWidth * 0.9
+                graphHeight = graphHeight * 0.9
             }
-            
            
             if (graphWidth > 2) {
                 graphWidth = 2
@@ -110,18 +117,18 @@ class ViewController: UIViewController {
 //                centerXOfGraph = 0
 //                centerYOfGraph = 0
             }
-            
+            print("hallo values are  1 \(graphWidth) \(graphHeight)")
             
             if (graphHeight == 2 ||  graphWidth == 2) {
                 let img = getShapeWithFirstDrawigPointAndGraphHeightWidth(graphHeight: 2, graphWidth: 2, drawingOriginX: 0, drawingOriginY: 0)
-                
+                print("hallo values are  2 \(graphWidth) \(graphHeight)")
                 canvasIV.image = img
                 return
             }
             
             if roundedScale < 1 { //zoom out
                 let img = getShapeWithFirstDrawigPointAndGraphHeightWidth(graphHeight: graphHeight, graphWidth: graphWidth, drawingOriginX: centerXOfGraph, drawingOriginY: centerYOfGraph)
-                
+                print("hallo values are 3 \(graphWidth) \(graphHeight)")
                 canvasIV.image = img
                 return
             }
