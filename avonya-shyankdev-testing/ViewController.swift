@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Numerics
 
 class ViewController: UIViewController {
 
@@ -50,7 +51,7 @@ class ViewController: UIViewController {
         let rendere = UIGraphicsImageRenderer(size: .init(width: canvasWidth, height: canvasHeight))
         let img = rendere.image { ctx in
             
-            let maxIteration = 500
+            let maxIteration = 50
             let maxAbsLimit = 2.0
             
             var mSetPoints = [CGPoint]()
@@ -69,22 +70,32 @@ class ViewController: UIViewController {
                     
 //                    print("hey x is \(x) , y is \(y) , actuall value are of x & y =>>> \(actualX) \(actualY)")
                     
-                    let cSqr =  pow(Double(x) , 2) + pow(Double(y), 2)
-                    let c = sqrt(Double(cSqr)) // this is maginautde of c or value of comlex number
                     
+                    //MARK: - this might be needed in future
+//                    let cSqr =  pow(Double(x) , 2) + pow(Double(y), 2)
+//                    let c = sqrt(Double(cSqr)) // this is maginautde of c or value of comlex number
+//
 //                    print("value of c \(c)")
                     
                     var n = 0
                     
                     // fc (z) = z^2 + c
-                    var lastResult = 0.0
+//                    var lastResult = 0.0
                     // we are taking as zero as, at zero value of z is also zero, by convention or by m set structure
+//                    let c : Complex<Double> = 2 + 3 * .i
                     
+                    let c : Complex<Double> = .init(Double(x), Double(y))
+                    
+                    var lastPosition : Complex<Double> = 0 + 0 * .i
+//                    print(z.real)      // 2.0
+//                    print(z.imaginary) // 3.0
+//                    let realPart =
+//                    var c = Complex(Real(x), Real(y) )
                     while true {
+                        let z2 = (lastPosition * lastPosition)
+                        lastPosition = z2 + c
                         
-                        lastResult = pow(Double(lastResult) , 2) + c
-                        
-                        if abs(lastResult) > maxAbsLimit{
+                        if abs(lastPosition.lengthSquared) > pow(maxAbsLimit, 2){
 //                            print("last result at stage 1 is \(lastResult)")
                             break // we want to ch'eck if this number is under limit which 2 or -2 , abs is used to get absoulte value
                         }
@@ -95,9 +106,9 @@ class ViewController: UIViewController {
 //                            + canvasWidth/4
                             let finalY = CGFloat(actualY)
 //                            + canvasHeight/4
-                            mSetPoints.append(.init(x: finalX * 5, y: finalY * 5))
+                            mSetPoints.append(.init(x: finalX, y: finalY))
                             print("actual x = \(actualX) , actual y = \(actualY) , final x = \(finalX)  final y =\(finalY)")
-                            print("last result at final 1 is \(lastResult)")
+                            print("last result at final 1 is \(lastPosition)")
                             break
                         }
                     }
@@ -120,6 +131,7 @@ class ViewController: UIViewController {
                     ctx.cgContext.move(to: .init(x: point.x, y: -(point.y)))
                     print("initial point is \(point)")
                 }else{
+                    ctx.cgContext.inser
                     ctx.cgContext.addLine(to: .init(x: point.x, y: -(point.y)))
 
                 }
