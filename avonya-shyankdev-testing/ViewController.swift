@@ -35,7 +35,10 @@ class ViewController: UIViewController {
         ])
         
 //        let img = getShapeWithCoordinate( canvasWidth: self.canvasWidth, canvasHeight: self.canvasHeight, gap : 0.5)
-        let img = getShapeForSmallArea(fromX: -defaultCanvasWidth/2, fromY: -defaultCanvasHeight/2, canvasWidth: defaultCanvasWidth, canvasHeight: defaultCanvasHeight, gap: 0.5)
+        
+        let img = getShaopeImagePartSmaller(graphHeight: 2, graphWidth: 2 , canvasWidth: self.defaultCanvasWidth, canvasHeight: self.defaultCanvasHeight, gap : 0.5)
+//        getShaopeImagePartSmaller
+//        let img = getShapeForSmallArea(fromX: -defaultCanvasWidth/2, fromY: -defaultCanvasHeight/2, canvasWidth: defaultCanvasWidth, canvasHeight: defaultCanvasHeight, gap: 0.5)
         canvasIV.image = img
         canvasIV.isUserInteractionEnabled = true
         let gesture = UIPinchGestureRecognizer(target: self, action: #selector(handleZoomGesture(_:)) )
@@ -106,6 +109,61 @@ class ViewController: UIViewController {
     
     private let maxIteration = 50
     
+    
+    
+    private func getShaopeImagePartSmaller(graphHeight : CGFloat , graphWidth : CGFloat ,  canvasWidth : CGFloat , canvasHeight : CGFloat , gap : Double) -> UIImage{
+        let rendere = UIGraphicsImageRenderer(size: .init(width: canvasWidth, height: canvasHeight))
+        let img = rendere.image { ctx in
+            
+            ctx.cgContext.translateBy(x: canvasWidth/2, y: canvasHeight/2)
+            let maxAbsLimit = 2.0
+            
+            for actualX in stride(from: -Double(canvasWidth/2), to: Double(canvasWidth/2), by: gap) {
+                for actualY in stride(from: -Double(canvasHeight/2), to: Double(canvasHeight/2), by: gap) {
+                    
+                    let withDividingFactor = canvasWidth/graphWidth * 0.5 // this is becuase we divide the axis above
+                    let heightDividingFactor = canvasHeight/graphHeight * 0.5
+                    
+                    let x = CGFloat(actualX)/withDividingFactor // we have to take range of cooirdinate from -2 to +2,
+                    let y = CGFloat(actualY)/heightDividingFactor // this will convert pixel location to coordinate on graph
+                    
+                    var n = 0 // number of iterations
+                    let c : Complex<Double> = .init(Double(x), Double(y))
+                    var lastPosition : Complex<Double> = 0 + 0 * .i
+                    while true {
+                        let z2 = (lastPosition * lastPosition)
+                        lastPosition = z2 + c
+                        
+                        if abs(lastPosition.lengthSquared) > pow(maxAbsLimit, 2){
+                            break // we want to ch'eck if this number is under limit which 2 or -2 , abs is used to get absoulte value
+                        }
+                        n += 1
+                        if (n >= maxIteration) {
+//                            let finalX = CGFloat(actualX)
+//                            let finalY = CGFloat(actualY)
+                            break
+                        }
+                    }
+                    if (n >= maxIteration) {
+                        ctx.cgContext.setFillColor(UIColor.black.cgColor)
+                    }else{
+                        ctx.cgContext.setFillColor(getColorForPoint(numberOfIteration: n).cgColor)
+                    }
+                    ctx.cgContext.addRect(.init(x: actualX, y: actualY, width: 1, height: 1))
+                    ctx.cgContext.drawPath(using: .fill)
+                    
+                }
+            }
+
+        }
+        return img
+//        let iv = UIImageView(image: img)
+//        iv.contentMode = .scaleAspectFill
+//        iv.backgroundColor = .gray
+//        return iv
+    }
+    
+    
     private func getShapeForSmallArea(fromX : CGFloat , fromY : CGFloat ,  canvasWidth : CGFloat , canvasHeight : CGFloat , gap : Double) -> UIImage {
         let rendere = UIGraphicsImageRenderer(size: .init(width: canvasWidth, height: canvasHeight))
         
@@ -124,9 +182,12 @@ class ViewController: UIViewController {
                     
                     var n = 0 // number of iterations
                     let c : Complex<Double> = .init(Double(x), Double(y))
-                    var lastPosition : Complex<Double> =  .init(fromX + canvasWidth/2, fromY + canvasHeight/2)
+                    var lastPosition : Complex<Double> =
+                        .init(
+                            -(fromX + canvasWidth/2)/withDividingFactor,
+                              (fromY + canvasHeight/2)/heightDividingFactor )
 //                    = 0 + 0 * .i
-                      
+                      print("youar center is \(lastPosition)")
                     while true {
                         let z2 = (lastPosition * lastPosition)
                         lastPosition = z2 + c
