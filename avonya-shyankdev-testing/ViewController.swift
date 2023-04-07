@@ -36,7 +36,7 @@ class ViewController: UIViewController {
         
 //        let img = getShapeWithCoordinate( canvasWidth: self.canvasWidth, canvasHeight: self.canvasHeight, gap : 0.5)
         
-        let img = getShaopeImagePartSmaller(graphHeight: 2, graphWidth: 2 , canvasWidth: self.defaultCanvasWidth, canvasHeight: self.defaultCanvasHeight, gap : 0.5 , drawingOriginX : -1 , drawingOriginY : 0)
+        let img = getShaopeImagePartSmaller(graphHeight: 2, graphWidth: 2 , canvasWidth: self.defaultCanvasWidth, canvasHeight: self.defaultCanvasHeight, gap : 0.5 , drawingOriginX : 0 , drawingOriginY : 0)
 //        getShaopeImagePartSmaller
 //        let img = getShapeForSmallArea(fromX: -defaultCanvasWidth/2, fromY: -defaultCanvasHeight/2, canvasWidth: defaultCanvasWidth, canvasHeight: defaultCanvasHeight, gap: 0.5)
         canvasIV.image = img
