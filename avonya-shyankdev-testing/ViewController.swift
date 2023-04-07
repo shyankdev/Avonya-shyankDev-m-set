@@ -36,7 +36,8 @@ class ViewController: UIViewController {
         
 //        let img = getShapeWithCoordinate( canvasWidth: self.canvasWidth, canvasHeight: self.canvasHeight, gap : 0.5)
         
-        let img = getShaopeImagePartSmaller(graphHeight: 2, graphWidth: 2 , canvasWidth: self.defaultCanvasWidth, canvasHeight: self.defaultCanvasHeight, gap : 0.5 , drawingOriginX : 0 , drawingOriginY : 0)
+//        let img = getShaopeImagePartSmaller(graphHeight: 2, graphWidth: 2 , canvasWidth: self.defaultCanvasWidth, canvasHeight: self.defaultCanvasHeight, gap : 0.5 , drawingOriginX : 0 , drawingOriginY : 0)
+        let img = getShapeWithFirstDrawigPointAndGraphHeightWidth(graphHeight: 2, graphWidth: 2, drawingOriginX: 0, drawingOriginY: 0)
 //        getShaopeImagePartSmaller
 //        let img = getShapeForSmallArea(fromX: -defaultCanvasWidth/2, fromY: -defaultCanvasHeight/2, canvasWidth: defaultCanvasWidth, canvasHeight: defaultCanvasHeight, gap: 0.5)
         canvasIV.image = img
@@ -109,7 +110,10 @@ class ViewController: UIViewController {
     
     private let maxIteration = 50
     
-    
+    private func getShapeWithFirstDrawigPointAndGraphHeightWidth(graphHeight : CGFloat , graphWidth : CGFloat , drawingOriginX : Double , drawingOriginY : Double ) -> UIImage {
+        let img = getShaopeImagePartSmaller(graphHeight: graphHeight, graphWidth: graphWidth, canvasWidth: self.defaultCanvasWidth, canvasHeight: self.defaultCanvasHeight, gap: 0.5, drawingOriginX: drawingOriginX, drawingOriginY: drawingOriginY)
+        return img
+    }
     
     private func getShaopeImagePartSmaller(graphHeight : CGFloat , graphWidth : CGFloat ,  canvasWidth : CGFloat , canvasHeight : CGFloat , gap : Double, drawingOriginX : Double , drawingOriginY : Double) -> UIImage{
         let rendere = UIGraphicsImageRenderer(size: .init(width: canvasWidth, height: canvasHeight))
